@@ -1,20 +1,20 @@
 const randToken = require('rand-token');
 const jwt = require('jsonwebtoken');
-const { options, secretKey } = require('../../../config/secretKey');
+const redis = require('../utils/redisUtil');
+const { options, secretKey } = require('../config/jwtconfig');
+
 const TOKEN_EXPIRED = -3;
 const TOKEN_INVALID = -2;
 
 module.exports = {
 
     //access 토큰 생성
-    sign: async (user) => {
+    createAccessToken: async (user) => {
         const payload = {
-            id: user.userId,
-            name: user.name,
+            uuid: user.user_uuid,
         };
-        const result = {
-            token: jwt.sign(payload, secretKey, options),
-        };
+        const result =
+            jwt.sign(payload, secretKey, options);
         return result;
     },
 
@@ -25,6 +25,7 @@ module.exports = {
                 algorithm: 'HS256',
                 expiresIn: '14d',
             })
+
         return result;
     },
 
@@ -47,4 +48,28 @@ module.exports = {
             return decoded;
         }
     },
+    refreshVerify: async (token, uuid) => {
+        try {
+            const data = await redis.get(uuid);
+            if (data === token) {
+                try {
+                    jwt.verify(token, secretKey);
+                    return true;
+                } catch (error) {
+                    if (error.message === 'jwt expired') {
+                        console.log('expired token');
+                        return TOKEN_EXPIRED;
+                    } else if (error.message === 'invalid token') {
+                        console.log('invalid token');
+                    } else {
+                        console.log('invalid token');
+                        return TOKEN_INVALID;
+                    }
+                }
+            }
+            else return false;
+        } catch (error) {
+            return false;
+        }
+    }
 }

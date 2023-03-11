@@ -1,5 +1,6 @@
 const express = require('express');
 const { userRouter, authRouter } = require('./routes');
+
 const app = express();
 require('dotenv').config();
 
@@ -9,6 +10,7 @@ app.use(express.json());
 app.use('/user', userRouter);
 app.use('/auth', authRouter);
 
-app.listen(PORT, host = "0.0.0", () => {
+
+app.listen(PORT, host = "0.0.0", async () => {
     console.log(`The Server is Listening at ${PORT}`);
 });

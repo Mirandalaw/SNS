@@ -1,6 +1,6 @@
 const userModels = require('../models/userModels');
-const { createHashedPassword, verifyPassword } = require('../utils/crytoUtil');
-const createUUID = require('../utils/uuidUtil');
+const { createHashedPassword, createSalt } = require('../utils/crytoUtil');
+const { createUUID } = require('../utils/uuidUtil');
 
 module.exports = {
 
@@ -30,7 +30,8 @@ module.exports = {
             const user_uuid = createUUID();
             const current_ip = body.ip;
             const { password } = body;
-            const { hashedPassword, salt } = await createHashedPassword(password);
+            const csalt = await createSalt();
+            const { hashedPassword, salt } = await createHashedPassword(password, csalt);
             const user = await userModels.createUser(user_uuid, current_ip, salt, hashedPassword, body);
             return user;
         } catch (error) {

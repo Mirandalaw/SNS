@@ -63,6 +63,5 @@ module.exports = {
         const sql = `DELETE FROM user WHERE user_id ='${userId}'`
         const result = await pool.execute(sql);
         return result[0];
-
     }
 }

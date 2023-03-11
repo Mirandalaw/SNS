@@ -19,8 +19,8 @@ module.exports = {
      * @param {String} password 
      * @returns String, String
      */
-    createHashedPassword: async (password) => {
-        const salt = await createSalt();
+    createHashedPassword: async (password, csalt) => {
+        const salt = csalt;
         const key = await pbkdf2Promise(password, salt, Number(process.env.KEY_STRETCHING), 64, "sha512");
         const hashedPassword = key.toString("base64");
         return { hashedPassword, salt };
