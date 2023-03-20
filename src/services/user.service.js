@@ -1,5 +1,5 @@
 const userModels = require('../models/userModels');
-const { createHashedPassword, createSalt } = require('../utils/crytoUtil');
+const { createHashedPassword, createSalt } = require('../utils/cryptoUtil');
 const { createUUID } = require('../utils/uuidUtil');
 
 module.exports = {

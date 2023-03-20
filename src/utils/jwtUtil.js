@@ -9,26 +9,38 @@ const TOKEN_INVALID = -2;
 module.exports = {
 
     //access 토큰 생성
-    createAccessToken: async (user) => {
+    /**
+     * 
+     * @param {string} user_uuid 
+     * @returns {string} accessToken
+     */
+    createAccessToken: async (user_uuid) => {
         const payload = {
-            uuid: user.user_uuid,
+            uuid: user_uuid,
         };
-        const result =
-            jwt.sign(payload, secretKey, options);
+        const result = jwt.sign(payload, secretKey, options);
         return result;
     },
 
     //refresh 토큰 생성
+    /**
+     * 
+     * @returns {string} refreshToken
+     */
     createRefreshToken: async () => {
         const result =
             jwt.sign({}, secretKey, {
                 algorithm: 'HS256',
-                expiresIn: '14d',
+                expiresIn: '10m',
             })
 
         return result;
     },
-
+    /**
+     * 
+     * @param {string} token accessToken || refreshToken
+     * @returns jwt.payload
+     */
     verify: async (token) => {
         let decoded;
         try {
@@ -36,40 +48,48 @@ module.exports = {
             return decoded;
         } catch (error) {
             if (error.message === 'jwt expired') {
-                console.log('expired token');
+                console.log('AccessToken is expired');
                 return TOKEN_EXPIRED;
             } else if (error.message === 'invalid token') {
-                console.log('invalid token');
+                console.log('AccessToken is invalid');
                 return TOKEN_INVALID;
             } else {
-                console.log('invalid token');
+                console.log('AccessToken is invalid');
                 return TOKEN_INVALID;
             }
             return decoded;
         }
     },
+    /**
+     * 
+     * @param {string} token refreshToken
+     * @param {string} uuid user_uuid
+     * @returns false || true || TOKEN_EXPIRED || TOKEN_INVALID
+     */
     refreshVerify: async (token, uuid) => {
         try {
-            const data = await redis.get(uuid);
-            if (data === token) {
+            const existing_refreshToken = await redis.get(uuid);
+            if (existing_refreshToken === token) {
                 try {
                     jwt.verify(token, secretKey);
                     return true;
                 } catch (error) {
-                    if (error.message === 'jwt expired') {
-                        console.log('expired token');
+                    console.log(error);
+                    if (error.message === 'jwt must be provided') {
+                        console.log('RefreshToken is expired');
                         return TOKEN_EXPIRED;
                     } else if (error.message === 'invalid token') {
-                        console.log('invalid token');
+                        console.log('RefreshToken is invalid');
+                        return TOKEN_INVALID;
                     } else {
-                        console.log('invalid token');
+                        console.log('RefreshToken is invalid');
                         return TOKEN_INVALID;
                     }
                 }
             }
-            else return false;
         } catch (error) {
-            return false;
+            console.log(error);
+            throw new Error('while verifying a refreshToken');
         }
     }
 }

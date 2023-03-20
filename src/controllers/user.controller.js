@@ -1,4 +1,4 @@
-const { createHashedPassword, verifyPassword } = require('../utils/crytoUtil');
+const { createHashedPassword, verifyPassword } = require('../utils/cryptoUtil');
 const { userService } = require('../services');
 
 module.exports = {
@@ -56,21 +56,5 @@ module.exports = {
             res.status(500).send({ error: error.message });
         }
     },
-
-    login: async (req, res) => {
-        try {
-            const { userId, password } = req.body;
-            const user = await userModels.getOneUser(id);
-            if (user) {
-                const verified = await verifyPassword(password, user[0].salt, user[0].password);
-                if (!verified) return res.send({ message: "password is not correct" });
-                return res.send(200);
-            }
-            else return res.send(400);
-        } catch (error) {
-            console.log(error);
-            res.status(500).send({ error: error.message });
-        }
-    }
 
 }
