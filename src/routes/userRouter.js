@@ -13,6 +13,14 @@ userRouter.get('/', [
 ], userController.findById);
 
 userRouter.post('/', [
+    check('user_id').exists().isString(),
+    check('nickname').exists().isString(),
+    check('user_name').exists().isString(),
+    check('cell_phone').exists().isString(),
+    check('email').exists().isString(),
+    check('birthday').exists().isString(),
+    check('sex').exists().isNumeric(),
+    check('password').exists().isString().isLength({ min: 8 }),
     validationErrorChecker,
 ], userController.create);
 
