@@ -1,28 +1,21 @@
 const { verifyPassword } = require('../utils/cryptoUtil');
 const jwt = require('../utils/jwtUtil');
 const redis = require('../utils/redisUtil');
-
-const TOKEN_EXPIRED = -3;
-const TOKEN_INVALID = -2;
-const ACCESSTOKEN_INVALID = -4;
-const REFRESHTOKEN_INVALID = -5;
-const ACCESSTOKEN_EXPIRED = -6;
-const REFRESHTOKEN_EXPIRED = -7;
+const { TOKEN_INVALID, TOKEN_EXPIRED, ACCESSTOKEN_INVALID, REFRESHTOKEN_INVALID, ACCESSTOKEN_EXPIRED, REFRESHTOKEN_EXPIRED } = require('../config/defconfig');
 
 module.exports = {
 
-    login: async (user, body) => {
+    login: async (user, reqData) => {
         try {
-            const { user_pwd } = body;
+            const { user_pwd } = reqData.body;
             const { salt, password, user_uuid } = user[0];
-            if (user) {
+            if (user.length !== 0) {
                 const verified = await verifyPassword(user_pwd, salt, password);
                 if (verified) {
                     const accessToken = await jwt.createAccessToken(user_uuid);
                     const refreshToken = await jwt.createRefreshToken();
                     await redis.set(user_uuid, refreshToken);
                     await redis.expire(user_uuid, 10 * 60);
-                    console.log(accessToken);
                     return accessToken;
                 }
             }
@@ -37,6 +30,7 @@ module.exports = {
             const { user_uuid } = reqData.query;
             const accessToken = reqData.headers.authorization.split('Bearer ')[1];
             const accTokenInfo = await jwt.verify(accessToken); // => invalid, expired, {payload} 
+            console.log(accTokenInfo);
             // accessToken이 invalid된 경우 (accessToken 이 변조된 경우)
             if (accTokenInfo === TOKEN_INVALID) return { accessToken: null, result: ACCESSTOKEN_INVALID };
 
@@ -52,19 +46,11 @@ module.exports = {
                     return { accessToken: new_accessToken, result: ACCESSTOKEN_EXPIRED }; //refreshToken 이 있으니 access 재발급 해서 result 값주고
                 }
             }
-
+            else {
+                return { accessToken: accessToken, result: true };
+            }
         } catch (error) {
             console.log(error);
-        }
-    },
-
-    reIssue: async (reqData) => {
-        try {
-            const { user_uuid } = reqData.query;
-            const accessToken = jwt.createAccessToken(user_uuid);
-            return accessToken;
-        } catch (error) {
-            throw new Error('while creating accessToken');
         }
     }
 }

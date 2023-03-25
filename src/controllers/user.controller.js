@@ -15,8 +15,7 @@ module.exports = {
 
     findById: async (req, res) => {
         try {
-            const userId = req.query.id;
-            const data = await userService.findUser(userId);
+            const data = await userService.findUser(req);
             if (data.length == 0) return res.status(404).send("User is not found");
             return res.send({ data });
         } catch (error) {
@@ -27,7 +26,7 @@ module.exports = {
 
     create: async (req, res) => {
         try {
-            const data = await userService.insertUser(req.body);
+            const data = await userService.insertUser(req);
             return res.send({ data });
         } catch (error) {
             console.log(error);
@@ -37,8 +36,7 @@ module.exports = {
 
     update: async (req, res) => {
         try {
-            const userId = req.query.id;
-            const data = await userService.updateUser(userId, req.body);
+            const data = await userService.updateUser(req);
             return res.send({ data });
         } catch (error) {
             console.log(error);
@@ -48,8 +46,7 @@ module.exports = {
 
     delete: async (req, res) => {
         try {
-            const userId = req.query.id;
-            const data = await userService.deleteUser(userId);
+            const data = await userService.deleteUser(req);
             return res.send({ data });
         } catch (error) {
             console.log(error);

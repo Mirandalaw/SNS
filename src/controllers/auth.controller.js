@@ -4,10 +4,9 @@ module.exports = {
 
     login: async (req, res) => {
         try {
-            const { userId } = req.body;
-            const user = await userService.findUser(userId);
-            const accessToken = await authService.login(user, req.body);
-            if (accessToken) return res.status(200).send("success login");
+            const user = await userService.findUser(req);
+            const accessToken = await authService.login(user, req);
+            if (accessToken) return res.status(200).send({ token: accessToken, statusCode: 200, msg: "success login" });
             return res.status(400).send('id or password is not correct!');
         } catch (error) {
             console.log(error);
@@ -17,9 +16,7 @@ module.exports = {
 
     test: async (req, res) => {
         try {
-            const { user_id } = req.query;
-            const user = await userService.findUser(user_id);
-            return res.status(200).send(user);
+            return res.status(200).send({ msg: "success" });
 
         } catch (error) {
             console.log(error);
