@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { validationErrorChecker } = require('../middlewares');
+const { validationErrorChecker, authMiddleware } = require('../middlewares');
 const { userController } = require('../controllers');
 const { check } = require('express-validator');
 
@@ -12,7 +12,7 @@ userRouter.get('/', [
     validationErrorChecker,
 ], userController.findById);
 
-userRouter.post('/', [
+userRouter.post('/singup', [
     check('user_id', 'ID must not be empty').exists().isString(),
     check('nickname', 'Nickname must not be empty').exists().isString(),
     check('user_name', 'Username must not be empty').exists().isString(),
@@ -24,15 +24,20 @@ userRouter.post('/', [
     validationErrorChecker,
 ], userController.create);
 
-userRouter.put('/', [
-    check('id', 'Id must not be empty').exists().isString(),
-    check('password', 'Password must not be empty').exists().isLength({ min: 4 }),
-    validationErrorChecker,
-], userController.update);
+// userRouter.put('/', [
+//     check('user_id', 'Id must not be empty').exists().isString(),
+//     check('user_password', 'Password must not be empty').exists().isLength({ min: 4 }),
+//     validationErrorChecker,
+// ], userController.update);
 
 userRouter.delete('/', [
-    check('id', 'Id must not be empty').exists().isString(),
+    check('user_id', 'Id must not be empty').exists().isString(),
     validationErrorChecker,
 ], userController.delete);
 
+userRouter.patch('/name', userController.updateName);
+userRouter.patch('/nickname', userController.updateNickname);
+userRouter.patch('/password', userController.updatePassword);
+userRouter.patch('/email', userController.updateEmail);
+userRouter.patch('/cell-phone', userController.updateCellPhone);
 module.exports = { userRouter };

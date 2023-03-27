@@ -9,5 +9,4 @@ authRouter.post('/login', [
     check('user_pwd').exists().isString(),
     validationErrorChecker
 ], authController.login);
-authRouter.get('/test', authMiddleware.checkToken, authController.test);
 module.exports = { authRouter };

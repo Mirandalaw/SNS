@@ -2,11 +2,7 @@ const { secretKey } = require('../config/jwtconfig');
 const jwt = require('../utils/jwtUtil');
 const redis = require('../utils/redisUtil');
 const { authService } = require('../services');
-
-const ACCESSTOKEN_INVALID = -4;
-const REFRESHTOKEN_INVALID = -5;
-const ACCESSTOKEN_EXPIRED = -6;
-const REFRESHTOKEN_EXPIRED = -7;
+const { ACCESSTOKEN_INVALID, REFRESHTOKEN_INVALID, ACCESSTOKEN_EXPIRED, REFRESHTOKEN_EXPIRED } = require('../config/jwtconfig');
 
 const authMiddleware = {
     checkToken: async (req, res, next) => {

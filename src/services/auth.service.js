@@ -29,9 +29,7 @@ module.exports = {
         try {
             const { user_uuid } = reqData.query;
             const accessToken = reqData.headers.authorization.split('Bearer ')[1];
-            const accTokenInfo = await jwt.verify(accessToken); // => invalid, expired, {payload} 
-            console.log(accTokenInfo);
-            // accessToken이 invalid된 경우 (accessToken 이 변조된 경우)
+            const accTokenInfo = await jwt.verify(accessToken); // => invalid, expired, {payload}             // accessToken이 invalid된 경우 (accessToken 이 변조된 경우)
             if (accTokenInfo === TOKEN_INVALID) return { accessToken: null, result: ACCESSTOKEN_INVALID };
 
             // accessToken이 expired된 경우 (accessToken이 만료된 경우)

@@ -53,8 +53,12 @@ module.exports = {
         return result;
     },
 
-    updateUser: async (userId, password) => {
-        const sql = `UPDATE user SET password= ${password} WHERE user_id ='${userId}'`
+    updateUserData: async (userId, columValue, columName, current_ip) => {
+        let sql;
+        if (columName === 'password') {
+            sql = `UPDATE user SET ${columName} = '${columValue[0]}',update_datetime = (now()),update_ip ='${current_ip}',salt = '${columValue[1]}',pw_update_time =(now()),pw_update_ip ='${current_ip}'  WHERE user_id ='${userId}'`
+        }
+        else sql = `UPDATE user SET ${columName} = '${columValue}',update_datetime = (now()) , update_ip ='${current_ip}' WHERE user_id ='${userId}'`
         const result = await pool.execute(sql);
         return result[0];
     },
