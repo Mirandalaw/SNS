@@ -5,15 +5,15 @@ const { check } = require('express-validator');
 
 const userRouter = Router();
 
-userRouter.get('/all', userController.findAll);
+userRouter.get('/all', userController.findAllUsers);
 
 userRouter.get('/', [
-    check('userId', 'Id must not be empty').exists().isString(),
+    check('userId', 'UserId must not be empty').exists().isString(),
     validationErrorChecker,
-], userController.findById);
+], userController.findOneUserById);
 
-userRouter.post('/singup', [
-    check('user_id', 'ID must not be empty').exists().isString(),
+userRouter.post('/signup', [
+    check('user_id', 'UserId must not be empty').exists().isString(),
     check('nickname', 'Nickname must not be empty').exists().isString(),
     check('user_name', 'Username must not be empty').exists().isString(),
     check('cell_phone', 'Phone number must not be empty').exists().isString(),
@@ -22,7 +22,44 @@ userRouter.post('/singup', [
     check('sex', 'Sex must not be empty').exists().isNumeric(),
     check('password', 'Password must not be empty').exists().isString().isLength({ min: 8 }),
     validationErrorChecker,
-], userController.create);
+], userController.signUp);
+
+userRouter.delete('/', [
+    check('user_id', 'UserId must not be empty').exists().isString(),
+    validationErrorChecker,
+], userController.delete);
+
+userRouter.patch('/name', [
+    check('user_id', 'UserId must not be empty').exists().isString(),
+    check('user_name', 'Username must not be empty').exists().isString(),
+    validationErrorChecker
+], userController.updateName);
+
+userRouter.patch('/nickname', [
+    check('user_id', 'UserId must not be empty').exists().isString(),
+    check('nickname', 'Nickname must not be empty').exists().isString(),
+    validationErrorChecker
+], userController.updateNickname);
+
+userRouter.patch('/password', [
+    check('user_id', 'UserId must not be empty').exists().isString(),
+    check('password', 'Password must not be empty').exists().isString(),
+    validationErrorChecker
+], userController.updatePassword);
+
+userRouter.patch('/email', [
+    check('user_id', 'UserId must not be empty').exists().isString(),
+    check('email', 'Email must not be empty').exists().isString(),
+    validationErrorChecker
+], userController.updateEmail);
+
+userRouter.patch('/cell-phone', [
+    check('user_id', 'UserId must not be empty').exists().isString(),
+    check('cell_phone', 'Phone number must not be empty').exists().isString(),
+    validationErrorChecker
+], userController.updateCellPhone);
+
+// userRouter.patch('/:user_name', userController.update);
 
 // userRouter.put('/', [
 //     check('user_id', 'Id must not be empty').exists().isString(),
@@ -30,14 +67,4 @@ userRouter.post('/singup', [
 //     validationErrorChecker,
 // ], userController.update);
 
-userRouter.delete('/', [
-    check('user_id', 'Id must not be empty').exists().isString(),
-    validationErrorChecker,
-], userController.delete);
-
-userRouter.patch('/name', userController.updateName);
-userRouter.patch('/nickname', userController.updateNickname);
-userRouter.patch('/password', userController.updatePassword);
-userRouter.patch('/email', userController.updateEmail);
-userRouter.patch('/cell-phone', userController.updateCellPhone);
 module.exports = { userRouter };

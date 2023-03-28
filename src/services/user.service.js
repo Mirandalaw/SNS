@@ -1,32 +1,31 @@
-const req = require('express/lib/request');
 const userModels = require('../models/userModels');
 const { createHashedPassword, createSalt } = require('../utils/cryptoUtil');
 const { createUUID } = require('../utils/uuidUtil');
 
 module.exports = {
 
-    findUsers: async () => {
+    getAllUsers: async () => {
         try {
-            const user = await userModels.getUsers();
-            return user;
+            const users = await userModels.getAllUsers();
+            return users;
         } catch (error) {
             console.log(error);
-            throw new Error('Error while finding all user!!');
+            throw new Error('Error while finding all users');
         }
     },
 
-    findUser: async (data) => {
+    getOneUser: async (data) => {
         try {
             const user = await userModels.getOneUser(data);
             return user;
         } catch (error) {
             console.log(error);
-            throw new Error('Error while finding by userId!!');
+            throw new Error('Error while finding by userId');
         }
 
     },
 
-    insertUser: async (reqData) => {
+    createUser: async (reqData) => {
         try {
             const user_uuid = createUUID();
             const current_ip = reqData.ip;
@@ -40,7 +39,13 @@ module.exports = {
             throw new Error('Error while inserting user!!');
         }
     },
-
+    // updateUser: async (reqData) => {
+    //     const columName = reqData.params
+    //     const { url } = reqData;
+    //     console.log(url);
+    //     return columName;
+    // }
+    // ,    
     upateUserName: async (reqData) => {
         try {
             const { user_id } = reqData.query;
@@ -61,7 +66,6 @@ module.exports = {
             const columName = 'nickname';
             const current_ip = reqData.ip;
             const columValue = reqData.body.nickname;
-            console.log(columValue);
             const user = await userModels.updateUserData(user_id, columValue, columName, current_ip);
             return user;
         } catch (error) {

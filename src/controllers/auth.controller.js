@@ -4,7 +4,7 @@ module.exports = {
 
     login: async (req, res) => {
         try {
-            const user = await userService.findUser(req.body.userId);
+            const user = await userService.getOneUser(req.body.userId);
             const accessToken = await authService.login(user, req);
             if (accessToken) return res.status(200).send({ token: accessToken, statusCode: 200, msg: "success login" });
             return res.status(400).send('id or password is not correct!');

@@ -2,7 +2,7 @@ const pool = require('./db');
 
 module.exports = {
 
-    getUsers: async () => {
+    getAllUsers: async () => {
         const sql = 'SELECT * FROM user';
         const result = await pool.execute(sql);
         return result[0];
