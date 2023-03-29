@@ -1,10 +1,11 @@
 const { Router } = require('express');
-const postController = require('../controllers/post.controller');
+const { postController } = require('../controllers');
 const { check } = require('express-validator');
 const { validationErrorChecker } = require('../middlewares');
+const { commentRouter } = require('./commentRouter');
 
 const postRouter = Router();
-
+postRouter.use('/:post_uuid/comment', commentRouter);
 postRouter.get('/all', postController.findAllPosts);
 
 postRouter.get('/', [

@@ -1,5 +1,4 @@
 const postService = require('../services/post.service');
-const { createUUID } = require('../utils/uuidUtil');
 
 module.exports = {
     findAllPosts: async (req, res) => {
@@ -15,10 +14,9 @@ module.exports = {
 
     findOnePostById: async (req, res) => {
         try {
-            const { postId } = req.query;
-            const post = await postService.getOnePost(postId);
-            if (post.length === 0) return res.status(404).send({ statusCode: 404, msg: "Posts were not found" });
-            return res.status(200).send({ data: post, statusCode: 200, msg: "Find a post by Id" });
+            const post = await postService.getOnePost(req);
+            if (post.length === 0) return res.status(404).send({ statusCode: 404, msg: "Post was not found" });
+            return res.status(200).send({ data: post, statusCode: 200, msg: "Find a post by id" });
         } catch (error) {
             console.log(error);
             res.status(500).send({ statusCode: 500, msg: "Server Error" });
@@ -38,7 +36,7 @@ module.exports = {
         try {
             const post = await postService.deletePost(req);
             if (post.length === 0) return res.status(404).send({ statusCode: 404, msg: "Post was not found" });
-            return res.status(201).send({ statusCode: 201, msg: "Find a post by Id" })
+            return res.status(201).send({ statusCode: 201, msg: "Success to delete a post by id" })
         } catch (error) {
             console.log(error);
             res.status(500).send({ statusCode: 500, msg: "Server Error" });
@@ -48,7 +46,7 @@ module.exports = {
     updateTitleById: async (req, res) => {
         try {
             const post = await postService.updateTitle(req);
-            return res.status(201).send({ statusCode: 201, msg: "Success to update title" });
+            return res.status(201).send({ statusCode: 201, msg: "Success to update a title by id" });
         } catch (error) {
             console.log(error);
             res.status(500).send({ statusCode: 500, msg: "Server Error" });
@@ -57,7 +55,7 @@ module.exports = {
     updateContetById: async (req, res) => {
         try {
             const post = await postService.updateContent(req);
-            return res.status(201).send({ statusCode: 201, msg: "Success to update content" });
+            return res.status(201).send({ statusCode: 201, msg: "Success to update content by id" });
         } catch (error) {
             console.log(error);
             res.status(500).send({ statusCode: 500, msg: "Server Error" });
@@ -66,7 +64,7 @@ module.exports = {
     updateImgUrlById: async (req, res) => {
         try {
             const post = await postService.updateImgUrl(req);
-            return res.status(201).send({ statusCode: 201, msg: "Success to update image_url" });
+            return res.status(201).send({ statusCode: 201, msg: "Success to update image_url by id" });
         } catch (error) {
             console.log(error);
             res.status(500).send({ statusCode: 500, msg: "Server Error" });

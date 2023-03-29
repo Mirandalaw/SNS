@@ -9,7 +9,7 @@ module.exports = {
     },
 
     getOnePost: async (post_uuid) => {
-        const sql = `SELECT * from post WHERE post_uuid = '${post_uuid}'`;
+        const sql = `SELECT * FROM post WHERE post_uuid = '${post_uuid}'`;
         const result = await pool.execute(sql);
         return result[0];
     },
@@ -27,16 +27,14 @@ module.exports = {
                 register_ip varchar(30) NOT NULL COMMENT '등록 IP',
                 update_datetime datetime NOT NULL COMMENT '정보수정일자',
                 update_ip varchar(30) NOT NULL COMMENT '정보수정 IP',
-                comment_uuid varchar(36) DEFAULT NULL COMMENT '댓글 UUID',
-                PRIMARY KEY (post_uuid),
-                UNIQUE KEY post_id (post_id)
+                PRIMARY KEY (post_uuid)
               )`;
         const result = await pool.execute(sql)
         return result;
     },
 
     createPost: async (post_uuid, user_uuid, current_ip, body) => {
-        const sql = `INSERT INTO post(post_uuid,post_title,post_content,image_url,post_status,user_uuid,register_datetime,register_ip,update_datetime,update_ip,comment_uuid) VALUES('${post_uuid}','${body.post_title}','${body.post_content}','0',0,'${user_uuid}',(now()),'${current_ip}',(now()),'${current_ip}','NULL')`;
+        const sql = `INSERT INTO post(post_uuid,post_title,post_content,image_url,post_status,user_uuid,register_datetime,register_ip,update_datetime,update_ip) VALUES('${post_uuid}','${body.post_title}','${body.post_content}','0',0,'${user_uuid}',(now()),'${current_ip}',(now()),'${current_ip}')`;
         const result = await pool.execute(sql);
         return result;
     },
