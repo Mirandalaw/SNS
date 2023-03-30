@@ -4,7 +4,9 @@ const { commentController } = require('../controllers');
 const { check } = require('express-validator');
 const validationErrorChecker = require('../middlewares/validator');
 const authMiddleware = require('../middlewares/auth');
+const { commentDislikeRouter } = require('./commentDislikeRouter');
 
+commentRouter.use('/dislike', commentDislikeRouter);
 commentRouter.get('/all', commentController.findAllComments);
 
 commentRouter.get('/', [

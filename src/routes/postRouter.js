@@ -3,9 +3,11 @@ const { postController } = require('../controllers');
 const { check } = require('express-validator');
 const { validationErrorChecker } = require('../middlewares');
 const { commentRouter } = require('./commentRouter');
+const { postDislikeRouter } = require('./postDislikeRouter');
 
 const postRouter = Router();
 postRouter.use('/:post_uuid/comment', commentRouter);
+postRouter.use('/:post_uuid/dislike', postDislikeRouter);
 postRouter.get('/all', postController.findAllPosts);
 
 postRouter.get('/', [
